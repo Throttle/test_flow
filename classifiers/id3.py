@@ -53,3 +53,39 @@ def gain(data, attr, target_attr):
 	# whole data set with respect to the target attribute (and return it)
 	return entropy(data, target_attr) - subset_entropy
 
+
+def get_most_popular(data, attr):
+	"""
+	Поиск самого часто употребимого значения атрибута attr
+	"""
+	temp = data[:]
+
+	temp_attr = list()
+	for d in data:
+		temp_attr.append(d[attr])
+
+	temp_unique = set(temp_attr)
+
+	max_freq = 0
+	result = None
+
+	for t in temp_unique:
+		if temp_attr.count(t) > max_freq:
+			result = t
+			max_freq = temp_attr.count(t)
+	return result
+
+
+
+
+def create_decision_tree(data, attributes, target_attr, fitness_func):
+	"""
+	Создание дерева принятия решения
+	"""
+	data = data[:]
+	vals = [record[target_attr] for record in data]
+	default = get_most_popular(data, target_attr)
+	tree = None
+
+
+	return tree
