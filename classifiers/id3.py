@@ -119,11 +119,17 @@ def get_examples(data, attr, value):
 			return rtn_lst
 
 
-def create_decision_tree(data, attributes, target_attr, fitness_func=gain):
+def create_decision_tree(data, fitness_func=gain):
 	"""
 	Создание дерева принятия решения
 	"""
 	data = data[:]
+	target_attr = None
+	attributes = list()
+	for key in data[0].keys():
+		if '?' in key:
+			target_attr = key
+		attributes.append(key)
 	vals = [record[target_attr] for record in data]
 	default = get_most_popular(data, target_attr)
 	

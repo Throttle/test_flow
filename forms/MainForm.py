@@ -81,7 +81,19 @@ class Dialog(QtGui.QDialog):
 
 
 	def create_evaluation_tree(self):
+		from parsers.DataParser import get_objects
+		from classifiers.id3 import create_decision_tree
+
+		if self.temp_lines:
+			data = get_objects(self.temp_lines)
+		else:
+			data = list()
+
+		tree = create_decision_tree(data)
 		pass
+
+
+
 
 	def show_tree(self):
 		pass
@@ -94,8 +106,8 @@ class Dialog(QtGui.QDialog):
 		if fileName:
 			self.fileNameEdit.setText(fileName)
 			f = open(fileName)
-			lines = f.readlines()
-			self.logText.setText(reduce(lambda x,y: x + y, lines))
+			self.temp_lines = f.readlines()
+			self.logText.setText(reduce(lambda x,y: x + y, self.temp_lines))
 
 
 
