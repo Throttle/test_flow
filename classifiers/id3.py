@@ -58,8 +58,6 @@ def get_most_popular(data, attr):
 	"""
 	Поиск самого часто употребимого значения атрибута attr
 	"""
-	temp = data[:]
-
 	temp_attr = list()
 	for d in data:
 		temp_attr.append(d[attr])
@@ -75,17 +73,89 @@ def get_most_popular(data, attr):
 			max_freq = temp_attr.count(t)
 	return result
 
+def get_values(data, attr):
+	"""
+	Creates a list of values in the chosen attribut for each record in data,
+	prunes out all of the redundant values, and return the list.
+	"""
+	data = data[:]
+	return list(set([record[attr] for record in data]))
+
+def choose_attribute(data, attributes, target_attr, fitness):
+	"""
+	Cycles through all the attributes and returns the attribute with the
+	highest information gain (or lowest entropy).
+	"""
+	data = data[:]
+	best_gain = 0.0
+	best_attr = None
+
+	for attr in attributes:
+		gain = fitness(data, attr, target_attr)
+		if gain >= best_gain and attr != target_attr:
+			best_gain = gain
+			best_attr = attr
+
+	return best_attr
+
+def get_examples(data, attr, value):
+	"""
+	Returns a list of all the records in <data> with the value of <attr>
+	matching the given value.
+	"""
+	data = data[:]
+	rtn_lst = []
+
+	if not data:
+		return rtn_lst
+	else:
+		record = data.pop()
+		if record[attr] == value:
+			rtn_lst.append(record)
+			rtn_lst.extend(get_examples(data, attr, value))
+			return rtn_lst
+		else:
+			rtn_lst.extend(get_examples(data, attr, value))
+			return rtn_lst
 
 
-
-def create_decision_tree(data, attributes, target_attr, fitness_func):
+def create_decision_tree(data, attributes, target_attr, fitness_func=gain):
 	"""
 	Создание дерева принятия решения
 	"""
 	data = data[:]
 	vals = [record[target_attr] for record in data]
 	default = get_most_popular(data, target_attr)
-	tree = None
+	
+	# If the dataset is empty or the attributes list is empty, return the
+	# default value. When checking the attributes list for emptiness, we
+	# need to subtract 1 to account for the target attribute.
+	if not data or (len(attributes) - 1) <= 0:
+		return default
+	# If all the records in the dataset have the same classification,
+	# return that classification.
+	elif vals.count(vals[0]) == len(vals):
+		return vals[0]
+	else:
+		# Choose the next best attribute to best classify our data
+		best = choose_attribute(data, attributes, target_attr, fitness_func)
 
+		# Create a new decision tree/node with the best attribute and an empty
+		# dictionary object--we'll fill that up next.
+		tree = {best:{}}
+
+		# Create a new decision tree/sub-node for each of the values in the
+		# best attribute field
+		for val in get_values(data, best):
+			# Create a subtree for the current value under the "best" field
+			subtree = create_decision_tree(
+				get_examples(data, best, val),
+				[attr for attr in attributes if attr != best],
+				target_attr,
+				fitness_func)
+
+			# Add the new subtree to the empty dictionary object in our new
+			# tree/node we just created.
+			tree[best][val] = subtree
 
 	return tree
