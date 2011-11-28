@@ -27,6 +27,7 @@ class Dialog(QtGui.QDialog):
 		self.fileNameEdit = QtGui.QLineEdit("")
 		self.fileNameEdit.setReadOnly(True)
 		self.openFileNameButton = QtGui.QPushButton(u"...")
+		self.openFileNameButton.clicked.connect(self.open_file)
 		layout.addWidget(self.fileNameEdit)
 		layout.addWidget(self.openFileNameButton)
 		self.viewParams.setLayout(layout)
@@ -88,6 +89,17 @@ class Dialog(QtGui.QDialog):
 
 	def classify(self):
 		pass
+
+	def open_file(self):
+		fileName, filtr = QtGui.QFileDialog.getOpenFileName()
+		if fileName:
+			self.fileNameEdit.setText(fileName)
+			f = open(fileName)
+			lines = f.readlines()
+			self.logText.setText(reduce(lambda x,y: x + y, lines))
+
+
+
 
 if __name__ == '__main__':
 	import sys
