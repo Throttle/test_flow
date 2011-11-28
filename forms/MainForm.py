@@ -21,7 +21,6 @@ class Dialog(QtGui.QDialog):
 		# create parameter edits
 		self.createGridGroupBox()
 
-
 		self.viewParams = QtGui.QGroupBox(u"Выберите файл с данными: ")
 		layout = QtGui.QHBoxLayout()
 		self.fileNameEdit = QtGui.QLineEdit("")
