@@ -19,13 +19,15 @@ def get_objects(file_lines):
 		obj = dict()
 		attr_values = line.split(",")
 		for i in range(0, len(attr_values)):
-			obj[attr_names[i]] = attr_values[i]
+			key = attr_names[i].replace('\n', '')
+			value = attr_values[i].replace('\n', '')
+			obj[key.strip()] = value.strip()
 		objects.append(obj)
 	return objects
 
 
 if __name__ == "__main__":
-	print get_objects(["attr1,attr2,attr3,attr4?", "val11,val12,val13,val14", "val21,val22,val23,val4"])
+	print get_objects(["attr1, attr2, attr3, attr4?\n", "val11, val12, val13, val14\n", "val21,val22,val23,val4"])
 
 
 
