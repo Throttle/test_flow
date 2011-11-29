@@ -82,14 +82,13 @@ class Dialog(QtGui.QDialog):
 
 	def create_evaluation_tree(self):
 		from parsers.DataParser import get_objects
-		from classifiers.id3 import create_decision_tree
+		from classifiers.id3 import start_creating_tree
 
 		if self.temp_lines:
 			data = get_objects(self.temp_lines)
 		else:
 			data = list()
-
-		tree = create_decision_tree(data)
+		tree = start_creating_tree(data)
 		pass
 
 
